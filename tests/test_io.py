@@ -190,6 +190,48 @@ class TestProposals:
         result = io.read_proposals(families=["max_mean"])
         assert len(result) == 0
 
+    def test_invalid_family_raises(self):
+        df = _proposals_df()
+        df = df.with_columns(pl.lit("bogus_family").alias("family"))
+        with pytest.raises(ValueError, match="Invalid family"):
+            io.write_proposals(df)
+
+    def test_invalid_proposal_type_raises(self):
+        df = _proposals_df()
+        df = df.with_columns(pl.lit("invalid_type").alias("proposal_type"))
+        with pytest.raises(ValueError, match="Invalid proposal_type"):
+            io.write_proposals(df)
+
+    def test_invalid_solver_status_raises(self):
+        df = _proposals_df()
+        df = df.with_columns(pl.lit("crashed").alias("solver_status"))
+        with pytest.raises(ValueError, match="Invalid solver_status"):
+            io.write_proposals(df)
+
+    def test_weights_column_names_length_mismatch_raises(self):
+        df = _proposals_df()
+        df = df.with_columns(pl.Series("weights", [[0.5, 0.5]]))  # 2 weights, 3 col_names
+        with pytest.raises(ValueError, match="len\\(weights\\).*len\\(column_names\\)"):
+            io.write_proposals(df)
+
+    def test_pnl_matrix_not_2d_raises(self):
+        dt = date(2024, 1, 2)
+        product = "vol"
+        config_hash = "abc123def456789a"
+        df = _proposals_df(dt, product, config_hash)
+        bad_matrix = np.ones((10,))  # 1D
+        with pytest.raises(ValueError, match="expected 2D"):
+            io.write_proposals(df, pnl_matrices={(dt, product, config_hash): bad_matrix})
+
+    def test_pnl_matrix_cols_mismatch_raises(self):
+        dt = date(2024, 1, 2)
+        product = "vol"
+        config_hash = "abc123def456789a"
+        df = _proposals_df(dt, product, config_hash)  # 3 column_names
+        bad_matrix = np.ones((10, 5))  # 5 cols != 3
+        with pytest.raises(ValueError, match="matrix cols.*len\\(column_names\\)"):
+            io.write_proposals(df, pnl_matrices={(dt, product, config_hash): bad_matrix})
+
     def test_candidate_nullable_fields(self):
         df = pl.DataFrame({
             "date": [date(2024, 1, 2)],

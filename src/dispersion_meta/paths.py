@@ -27,23 +27,37 @@ def data_root() -> Path:
 
 
 # ---------------------------------------------------------------------------
-# Table paths — single Parquet file per table
+# Hive partition helpers
 # ---------------------------------------------------------------------------
 
-def features_path() -> Path:
-    return data_root() / "daily_features.parquet"
+def _partition_dir(table_dir: Path, dt: date) -> Path:
+    """Return the year=YYYY/month=MM partition directory for a date."""
+    return table_dir / f"year={dt.year}" / f"month={dt.month:02d}"
 
 
-def proposals_path() -> Path:
-    return data_root() / "proposals.parquet"
+def partition_path(table_dir: Path, dt: date) -> Path:
+    """Return the Parquet file path within a Hive partition for a date."""
+    return _partition_dir(table_dir, dt) / "data.parquet"
 
 
-def outcomes_path() -> Path:
-    return data_root() / "outcomes.parquet"
+# ---------------------------------------------------------------------------
+# Table directories — Hive-partitioned by year/month
+# ---------------------------------------------------------------------------
+
+def features_dir() -> Path:
+    return data_root() / "daily_features"
 
 
-def decisions_path() -> Path:
-    return data_root() / "decisions.parquet"
+def proposals_dir() -> Path:
+    return data_root() / "proposals"
+
+
+def outcomes_dir() -> Path:
+    return data_root() / "outcomes"
+
+
+def decisions_dir() -> Path:
+    return data_root() / "decisions"
 
 
 # ---------------------------------------------------------------------------
@@ -80,7 +94,25 @@ def atomic_write_parquet(df: pl.DataFrame, path: Path) -> None:
 
 
 def read_parquet_if_exists(path: Path) -> pl.DataFrame | None:
-    """Read a Parquet file, returning None if it doesn't exist."""
+    """Read a single Parquet file, returning None if it doesn't exist."""
     if not path.exists():
         return None
     return pl.read_parquet(path)
+
+
+def scan_table_dir(table_dir: Path) -> pl.DataFrame | None:
+    """Scan all Parquet files in a Hive-partitioned table directory.
+
+    Returns None if the directory doesn't exist or contains no parquet files.
+    The year=/month= partition columns are NOT included in the result —
+    dates are already stored as columns in the data itself.
+    """
+    if not table_dir.exists():
+        return None
+    parquet_files = sorted(table_dir.glob("**/data.parquet"))
+    if not parquet_files:
+        return None
+    return pl.read_parquet(
+        parquet_files,
+        hive_partitioning=False,
+    )
