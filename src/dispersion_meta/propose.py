@@ -210,8 +210,6 @@ def _solve_proposal(
         status = result.status
         if status in ("optimal", "optimal_inaccurate"):
             weights = result.weights.tolist()
-            selected = result.selected_names  # indices
-            sel_names = [column_names[i] for i in selected] if selected else column_names
             return {
                 "date": today,
                 "product": product,

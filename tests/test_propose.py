@@ -10,10 +10,8 @@ import polars as pl
 import pytest
 
 from dispersion_meta import io, schemas
-from dispersion_meta.config_space import FAMILIES
 from dispersion_meta.paths import set_data_root
 from dispersion_meta.propose import propose_today
-from dispersion_meta.synthetic import FEATURE_NAMES
 
 
 # ---------------------------------------------------------------------------

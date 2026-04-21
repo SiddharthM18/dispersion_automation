@@ -7,10 +7,9 @@ import numpy as np
 import polars as pl
 import pytest
 
-from dispersion_meta.bandit import ArmState, BayesianLinearBandit
+from dispersion_meta.bandit import BayesianLinearBandit
 from dispersion_meta.config_space import FAMILIES
 from dispersion_meta.synthetic import (
-    FEATURE_NAMES,
     MetaScoreOracle,
     generate_features,
     synth_outcome_rows,
@@ -111,7 +110,6 @@ class TestFit:
 
     def test_fit_with_no_family_data_keeps_prior(self):
         """If a family has no rows, its arm stays at the prior."""
-        rng = np.random.default_rng(0)
         # Create a tiny training df with only max_mean rows
         training_df = _make_training_df(n_days=10, seed=0)
         only_max_mean = training_df.filter(pl.col("family") == "max_mean")

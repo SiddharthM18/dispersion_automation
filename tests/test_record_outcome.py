@@ -1,18 +1,15 @@
 """Tests for record_outcome.py — T+5 outcome computation."""
 from __future__ import annotations
 
-from dataclasses import dataclass
 from datetime import date
-from unittest.mock import patch
 
 import numpy as np
 import polars as pl
 import pytest
 
-from dispersion_meta import io, schemas
+from dispersion_meta import io
 from dispersion_meta.paths import set_data_root
 from dispersion_meta.record_outcome import record_outcomes
-from dispersion_meta.meta_score import MetaScoreConfig
 
 
 @pytest.fixture(autouse=True)
