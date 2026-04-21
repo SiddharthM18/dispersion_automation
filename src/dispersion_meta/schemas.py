@@ -6,7 +6,7 @@ import polars as pl
 # Products & families — canonical string identifiers
 # ---------------------------------------------------------------------------
 
-VALID_PRODUCTS = frozenset({"corridor_var", "vol", "gamma", "dngamma"})
+VALID_PRODUCTS = frozenset({"corridor_var", "vol", "gamma", "dngamma", "var"})
 VALID_FAMILIES = frozenset({"max_mean", "max_min", "max_sharpe", "min_drawdown", "composite"})
 VALID_PROPOSAL_TYPES = frozenset({"best", "alt", "explore", "candidate"})
 VALID_DECISIONS = frozenset({"accepted", "rejected", "modified"})

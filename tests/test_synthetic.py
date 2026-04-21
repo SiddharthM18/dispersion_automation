@@ -82,8 +82,8 @@ class TestPopulateSyntheticHistory:
             n_days=60, n_per_family=10, n_names=20, seed=42
         )
         proposals = data["proposals"]
-        # 60 days × 4 products × 5 families × 10 per family = 12000
-        assert len(proposals) == 60 * 4 * 5 * 10
+        # 60 days × 5 products × 5 families × 10 per family = 15000
+        assert len(proposals) == 60 * 5 * 5 * 10
 
     def test_all_families_present(self):
         data = populate_synthetic_history(n_days=10, n_per_family=5, seed=42)

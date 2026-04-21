@@ -54,6 +54,7 @@ PRODUCT_SCALES: dict[str, float] = {
     "vol": 0.8,
     "gamma": 1.1,
     "dngamma": 0.9,
+    "var": 0.95,
 }
 
 PRODUCT_OFFSETS: dict[str, float] = {
@@ -61,6 +62,7 @@ PRODUCT_OFFSETS: dict[str, float] = {
     "vol": 0.1,
     "gamma": -0.05,
     "dngamma": 0.15,
+    "var": 0.05,
 }
 
 NOISE_STD = 0.4

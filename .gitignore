@@ -8,4 +8,5 @@ build/
 .ruff_cache/
 *.tmp
 .venv/
+.ipynb_checkpoints/
 Tryouts_Auto.ipynb

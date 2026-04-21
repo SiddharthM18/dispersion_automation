@@ -5,7 +5,7 @@ build-backend = "hatchling.build"
 [project]
 name = "dispersion-meta"
 version = "0.1.0"
-description = "Data layer for dispersion trading meta-optimization"
+description = "Meta-optimization layer for dispersion trading: data storage, contextual bandit, and proposal orchestration"
 requires-python = ">=3.11"
 dependencies = [
     "polars>=1.0",
