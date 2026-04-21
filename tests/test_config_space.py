@@ -99,6 +99,18 @@ class TestSampling:
             sample_config("bogus_family", rng)
 
 
+_has_optimizer = pytest.importorskip(
+    "dispersion_optimization", reason="dispersion_optimization not installed"
+) if False else None
+
+try:
+    from dispersion_optimization.optimizer import DispersionOptimizer  # noqa: F401
+    _has_optimizer = True
+except ImportError:
+    _has_optimizer = False
+
+
+@pytest.mark.skipif(not _has_optimizer, reason="dispersion_optimization not installed")
 class TestOptimizerCompatibility:
     """Smoke test: every config in the grid must be accepted by from_config.
 
@@ -108,6 +120,8 @@ class TestOptimizerCompatibility:
     propose script's retry logic.  The test for *optimal* solves uses
     the linear families (max_mean, max_min, min_drawdown) which are
     pure LP+MIP and reliably solvable.
+
+    Skipped in CI where dispersion_optimization is not installed.
     """
 
     @pytest.fixture()
